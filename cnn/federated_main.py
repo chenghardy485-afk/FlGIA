@@ -27,18 +27,21 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(seed)
     # construct model
     if args.dataset in ['cifar', 'cifar10', 'cinic', 'cinic_sep']:
-        if args.train_rule == 'HyperFL':
+        if args.train_rule in ['HyperFL-LPM','HyperFL++-LPM']:
+        # if args.train_rule == 'HyperFL':
             global_model = CifarCNN_Hyper(args=args).to(device)
         else:
             global_model = CifarCNN(num_classes=args.num_classes).to(device)
     elif args.dataset == 'fmnist':
-        if args.train_rule == 'HyperFL':
+        if args.train_rule in ['HyperFL-LPM','HyperFL++-LPM']:
+        # if args.train_rule == 'HyperFL':
             global_model = CNN_FMNIST_Hyper(args=args).to(device)
         else:
             global_model = CNN_FMNIST().to(device)
     elif args.dataset == 'emnist':
         args.num_classes = 62
-        if args.train_rule == 'HyperFL':
+        if args.train_rule in ['HyperFL-LPM','HyperFL++-LPM']:
+        # if args.train_rule == 'HyperFL':
             global_model = CNN_FMNIST_Hyper(args=args).to(device)
         else:
             global_model = CNN_FMNIST(num_classes=args.num_classes).to(device)
