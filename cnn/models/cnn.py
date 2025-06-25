@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from torch.nn import Parameter
+from HyperFL.cnn.models.rkd_hypernetwork import *
 
 
 class CifarCNN(nn.Module):
@@ -108,6 +109,37 @@ class Hypernetwork_CifarCNN(nn.Module):
         }
         return weights
 
+class Hypernetwork_rkd_CifarCNN(torch.nn.Module):
+    def __init__(self, embedding_dim, hidden_dim, rank=1):
+        super(Hypernetwork_rkd_CifarCNN, self).__init__()
+
+        layers = [nn.Linear(embedding_dim, hidden_dim),
+                  nn.ReLU(inplace=True)]
+        self.mlp = nn.Sequential(*layers)
+
+        # generate feature extractor parameter
+        self.c1_weights = rkdLinear(hidden_dim, 30, 40, rank)
+        self.c1_bias = rkdLinear(hidden_dim, 4, 4, rank)
+        self.c2_weights = rkdLinear(hidden_dim, 128, 100, rank)
+        self.c2_bias = rkdLinear(hidden_dim, 4, 8, rank)
+        self.c3_weights = rkdLinear(hidden_dim, 128, 144, rank)
+        self.c3_bias = rkdLinear(hidden_dim, 8, 8, rank)
+        self.l1_weights = rkdLinear(hidden_dim, 256, 288, rank)
+        self.l1_bias = rkdLinear(hidden_dim, 8 ,16, rank)
+
+    def forward(self, client_embedding):
+        features = self.mlp(client_embedding)
+        weights = {
+            "conv1.weight": self.c1_weights(features).view(16, 3, 5, 5),
+            "conv1.bias": self.c1_bias(features).view(-1),
+            "conv2.weight": self.c2_weights(features).view(32, 16, 5, 5),
+            "conv2.bias": self.c2_bias(features).view(-1),
+            "conv3.weight": self.c3_weights(features).view(64, 32, 3, 3),
+            "conv3.bias": self.c3_bias(features).view(-1),
+            "fc1.weight": self.l1_weights(features).view(128, 64 * 3 * 3),
+            "fc1.bias": self.l1_bias(features).view(-1),
+        }
+        return weights
 
 class Hypernetwork_CNN_FMNIST(nn.Module):
     def __init__(self, embedding_dim, hidden_dim):
@@ -137,6 +169,34 @@ class Hypernetwork_CNN_FMNIST(nn.Module):
         }
         return weights
 
+class Hypernetwork_rkd_CNN_FMNIST(nn.Module):
+    def __init__(self, embedding_dim, hidden_dim, rank=1):
+        super(Hypernetwork_rkd_CNN_FMNIST, self).__init__()
+
+        layers = [nn.Linear(embedding_dim, hidden_dim),
+                  nn.ReLU(inplace=True)]
+        self.mlp = nn.Sequential(*layers)
+
+        # generate feature extractor parameter
+        self.c1_weights = rkdLinear(hidden_dim, 20, 20, rank)
+        self.c1_bias = rkdLinear(hidden_dim, 4, 4, rank)
+        self.c2_weights = rkdLinear(hidden_dim, 128, 100, rank)
+        self.c2_bias = rkdLinear(hidden_dim, 4, 8, rank)
+        self.l1_weights = rkdLinear(hidden_dim, 320, 320, rank)
+        self.l1_bias = rkdLinear(hidden_dim, 8 ,16, rank)
+
+    def forward(self, client_embedding):
+        features = self.mlp(client_embedding)
+        weights = {
+            "conv1.weight": self.c1_weights(features).view(16, 1, 5, 5),
+            "conv1.bias": self.c1_bias(features).view(-1),
+            "conv2.weight": self.c2_weights(features).view(32, 16, 5, 5),
+            "conv2.bias": self.c2_bias(features).view(-1),
+            "fc1.weight": self.l1_weights(features).view(128, 32 * 5 * 5),
+            "fc1.bias": self.l1_bias(features).view(-1),
+        }
+        return weights
+
 
 class CifarCNN_Hyper(nn.Module):
     def __init__(self, args):
@@ -149,7 +209,11 @@ class CifarCNN_Hyper(nn.Module):
         # client embedding
         self.client_embedding = nn.Embedding(num_embeddings=1, embedding_dim=args.embed_dim)
         # hypernetwork
-        self.hypernetwork = Hypernetwork_CifarCNN(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
+        if   args.train_rule == 'HyperFL':
+             self.hypernetwork = Hypernetwork_CifarCNN(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
+        elif args.train_rule == 'HyperFL++':
+             self.hypernetwork = Hypernetwork_rkd_CifarCNN(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
+        # self.hypernetwork = Hypernetwork_CifarCNN(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
 
     def forward(self, x):
         # generate feature extractor weight
@@ -176,4 +240,9 @@ class CNN_FMNIST_Hyper(CifarCNN_Hyper):
         self.target_model = CNN_FMNIST(num_classes=args.num_classes)  # original model
 
         # hypernetwork
-        self.hypernetwork = Hypernetwork_CNN_FMNIST(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
+        if   args.train_rule == 'HyperFL':
+             self.hypernetwork = Hypernetwork_CNN_FMNIST(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
+        elif args.train_rule == 'HyperFL++':
+             self.hypernetwork = Hypernetwork_rkd_CNN_FMNIST(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
+        
+        # self.hypernetwork = Hypernetwork_CNN_FMNIST(embedding_dim=args.embed_dim, hidden_dim=args.hidden_dim)
