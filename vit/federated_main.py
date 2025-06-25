@@ -27,7 +27,7 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(seed)
     # construct model
     if args.dataset in ['cifar', 'cifar10','cinic_sep','fmnist']:
-        if args.train_rule in ['HyperFL','HyperFL++']:
+        if args.train_rule in ['HyperFL-LPM','HyperFL++-LPM']:
             global_model = ModelViT_Hyper(args=args).to(device)
         elif args.train_rule == 'Local-Adapter' or args.train_rule == 'FedAvg-Adapter':
             global_model = ModelViT_Adapter(args=args).to(device)
@@ -35,7 +35,7 @@ if __name__ == '__main__':
             global_model = ModelViT(args=args).to(device)
     elif args.dataset == 'emnist':
         args.num_classes = 62
-        if args.train_rule in ['HyperFL','HyperFL++']:
+        if args.train_rule in ['HyperFL-LPM','HyperFL++-LPM']:
             global_model = ModelViT_Hyper(args=args).to(device)
         elif args.train_rule == 'Local-Adapter' or args.train_rule == 'FedAvg-Adapter':
             global_model = ModelViT_Adapter(args=args).to(device)
