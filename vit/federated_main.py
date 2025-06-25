@@ -26,21 +26,21 @@ if __name__ == '__main__':
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     # construct model
-    if args.dataset in ['cifar', 'cifar10']:
-        if args.train_rule == 'HyperFL-LPM':
+    if args.dataset in ['cifar', 'cifar10','cinic_sep','fmnist']:
+        if args.train_rule in ['HyperFL','HyperFL++']:
             global_model = ModelViT_Hyper(args=args).to(device)
         elif args.train_rule == 'Local-Adapter' or args.train_rule == 'FedAvg-Adapter':
             global_model = ModelViT_Adapter(args=args).to(device)
         else:
-            global_model = ModelViT(num_classes=args.num_classes).to(device)
+            global_model = ModelViT(args=args).to(device)
     elif args.dataset == 'emnist':
         args.num_classes = 62
-        if args.train_rule == 'HyperFL-LPM':
+        if args.train_rule in ['HyperFL','HyperFL++']:
             global_model = ModelViT_Hyper(args=args).to(device)
         elif args.train_rule == 'Local-Adapter' or args.train_rule == 'FedAvg-Adapter':
             global_model = ModelViT_Adapter(args=args).to(device)
         else:
-            global_model = ModelViT(num_classes=args.num_classes).to(device)
+            global_model = ModelViT(args=args).to(device)
     else:
         raise NotImplementedError()
 
@@ -70,3 +70,7 @@ if __name__ == '__main__':
         print("Local Accuracy on Local Data: {}%, {}%".format(local_acc1, local_acc2))
         local_accs1.append(local_acc1)
         local_accs2.append(local_acc2)
+
+    # print the final accuracy
+    final_accuracy = max(local_accs1)
+    print("Final accuracy (max acc1): {:.2f}%".format(final_accuracy))

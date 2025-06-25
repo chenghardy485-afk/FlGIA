@@ -9,6 +9,6 @@ def local_update(rule):
                    'Local': LocalUpdate_StandAlone,
                    'Local-Adapter': LocalUpdate_StandAlone,
                    'HyperFL-LPM': LocalUpdate_HyperFL_LPM,
+                   'HyperFL++-LPM': LocalUpdate_HyperFL_LPM,
                    }
-
     return LocalUpdate[rule]

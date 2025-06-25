@@ -17,6 +17,7 @@ def one_round_training(rule):
                    'Local': train_round_standalone,
                    'Local-Adapter': train_round_standalone,
                    'HyperFL-LPM': train_round_hyperfl,
+                   'HyperFL++-LPM': train_round_hyperfl,
                    }
     return Train_Round[rule]
 

@@ -29,9 +29,9 @@ def args_parser():
                         help='the training rule for personalized FL')
     parser.add_argument('--local_size', type=int, default=600,
                         help='number of samples for each client')
-    parser.add_argument('--embed_dim', type=int, default=64,
+    parser.add_argument('--embed_dim', type=int, default=128,
                         help='The dimension of client embedding.')
-    parser.add_argument('--hidden_dim', type=int, default=128,
+    parser.add_argument('--hidden_dim', type=int, default=64,
                         help='The hidden dimension of hypernetwork.')
 
     # other arguments
@@ -47,5 +47,8 @@ def args_parser():
                         help='Default set to non-IID. Set to 1 for IID.')
     parser.add_argument('--noniid_s', type=int, default=20,
                         help='Default set to 20. Set to 100 for IID.')
+    parser.add_argument("--vit_type", type=str, default='vit_small',
+                        choices=["vit_small", "vit_tiny"],
+                        help="type of tunned ViT")
     args = parser.parse_args()
     return args
