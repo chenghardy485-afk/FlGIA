@@ -29,9 +29,9 @@ def args_parser():
                         help='the training rule for personalized FL')
     parser.add_argument('--local_size', type=int, default=600,
                         help='number of samples for each client')
-    parser.add_argument('--embed_dim', type=int, default=64,
+    parser.add_argument('--embed_dim', type=int, default=128,
                         help='The dimension of client embedding.')
-    parser.add_argument('--hidden_dim', type=int, default=128,
+    parser.add_argument('--hidden_dim', type=int, default=64,
                         help='The hidden dimension of hypernetwork.')
 
     # other arguments

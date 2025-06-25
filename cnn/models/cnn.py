@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from torch.nn import Parameter
-from HyperFL.cnn.models.rkd_hypernetwork import *
+from models.rkd_hypernetwork import *
 
 
 class CifarCNN(nn.Module):
