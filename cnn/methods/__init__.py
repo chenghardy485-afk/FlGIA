@@ -10,6 +10,7 @@ def local_update(rule):
     LocalUpdate = {'FedAvg': LocalUpdate_FedAvg,
                    'Local': LocalUpdate_StandAlone,
                    'HyperFL': LocalUpdate_HyperFL,
+                   'HyperFL++': LocalUpdate_HyperFL,
                    'DPFedAvg': LocalUpdate_DPFedAvg,
                    'PPSGD': LocalUpdate_PPSGD,
                    'CENTAUR': LocalUpdate_DPFedRep,

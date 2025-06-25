@@ -15,6 +15,7 @@ def one_round_training(rule):
     Train_Round = {'FedAvg': train_round_fedavg,
                    'Local': train_round_standalone,
                    'HyperFL': train_round_hyperfl,
+                   'HyperFL++': train_round_hyperfl,
                    'DPFedAvg': train_round_fedavg,
                    'PPSGD': train_round_fedpart,
                    'CENTAUR': train_round_fedpart,
