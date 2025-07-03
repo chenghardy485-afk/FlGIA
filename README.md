@@ -1,7 +1,7 @@
 # HyperFL++
 
-The implementation of A Novel Federated Learning Framework Against Gradient Inversion Attacks. \
-[Pengxin Guo](https://pengxin-guo.github.io)\*, Ziying Huang\*, [Shuang Zeng](https://scholar.google.com/citations?user=yTP1oqkAAAAJ&hl=en), Wenhao Chen, Xiaodan Zhang, Weihong Ren, Yuyin Zhou, and [Liangqiong Qu](https://liangqiong.github.io).
+The implementation of **A Novel Federated Learning Framework Against Gradient Inversion Attacks**. \
+[Pengxin Guo](https://pengxin-guo.github.io)\*, [Ziying Huang](https://ziying-zoey.github.io/)\*, Shuang Zeng, Xiaodan Zhang, Weihong Ren, Yuyin Zhou, and [Liangqiong Qu](https://liangqiong.github.io).
 
 <img src="./figs/motivation.png" alt="motivation" width="500" /> 
 
@@ -35,13 +35,13 @@ pip install -r requirements.txt
 ```
 
 ### 2. Train and test the model
-#### HyperFL
+#### HyperFL++
 ```bash
 cd ./cnn
 python federated_main.py --gpu 0 --train_rule HyperFL++ --dataset cifar --local_bs 50 --lr 0.02 --num_users 20 --frac 1.0
 ```
 
-#### HyperFL-LPM
+#### HyperFL++-LPM
 
 ```bash
 cd ./vit
